@@ -1,0 +1,23 @@
+{
+    "name": "sy/swoole_http_server_bundle",
+    "description": "Implements swoole php extension in symfony projects",
+    "type": "library",
+    "autoload": {
+        "psr-0": {
+            "Swoole\\HttpServerBundle": ""
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "ext-swoole": "*",
+        "symfony/symfony": "^2.7",
+        "symfony/console": "^2.7"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Samat Yusupov",
+            "email": "nknighter@gmail.com"
+        }
+    ]
+}
