@@ -10,8 +10,9 @@
     "require": {
         "php": ">=5.5",
         "ext-swoole": "*",
-        "symfony/symfony": "^2.7",
-        "symfony/console": "^2.7"
+        "symfony/http-foundation": "^2.3",
+        "symfony/console": "^2.3",
+        "symfony/framework-bundle": "^2.3"
     },
     "license": "MIT",
     "authors": [
