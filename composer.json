@@ -14,6 +14,7 @@
         "symfony/console": "^2.3",
         "symfony/framework-bundle": "^2.3"
     },
+    "minimum-stability": "dev",
     "license": "MIT",
     "authors": [
         {
