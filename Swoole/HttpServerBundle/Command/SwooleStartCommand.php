@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class SwooleStartCommand extends ContainerAwareCommand
 {
@@ -25,17 +26,39 @@ class SwooleStartCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $kernel = $this->getContainer()->get('kernel');
+        $router = $this->getContainer()->get('router');
 
-        $http = new \swoole_http_server($input->getOption('host'), $input->getOption('port'));
-
-        $http->on('request', function ($req, $res) use ($kernel, $http) {
+        $server = new \swoole_websocket_server(
+            $input->getOption('host'),
+            $input->getOption('port'),
+            SWOOLE_BASE
+        );
+        
+        $server->on('request', function ($req, $res) use ($kernel, $server) {
             $symfonyRequest = Request::createSymfonyRequest($req);
             $symfonyResponse = $kernel->handle($symfonyRequest);
 
             Response::send($res, $symfonyResponse);
             $kernel->terminate($symfonyRequest, $symfonyResponse);
         });
-
-        $http->start();
+        
+        $dispatcher = new EventDispatcher();
+        
+        $server->on('open', function ($server, $request) {
+            $event = new WebSocketEvent($server, $request->fd);
+            $dispatcher->dispatch(WebSocketEvents::onOpen, $event);
+        });
+        
+        $server->on('message', function ($server, $frame) {
+            $event = new WebSocketEvent($server, $frame->fd);
+            $dispatcher->dispatch(WebSocketEvents::onMessage, $event);
+        });
+        
+        $server->on('close', function ($server, $fd) {
+            $event = new WebSocketEvent($server, $fd);
+            $dispatcher->dispatch(WebSocketEvents::onClose, $event);
+        });
+        
+        $server->start();
     }
 }

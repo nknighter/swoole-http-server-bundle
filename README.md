@@ -7,7 +7,7 @@ Symfony bundle для https://github.com/swoole/swoole-src
     
     $bundles = array(
         ...
-        new \Swoole\HttpServerBundle\SwooleHttpServerBundle(),
+        new Swoole\HttpServerBundle\SwooleHttpServerBundle(),
         ...
     );
     
