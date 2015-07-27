@@ -1,10 +1,11 @@
 <?php
 
-
 namespace Swoole\HttpServerBundle\Command;
 
 use Swoole\HttpServerBundle\Http\Request;
 use Swoole\HttpServerBundle\Http\Response;
+use Swoole\HttpServerBundle\Websocket\Event as WebsocketEvent;
+use Swoole\HttpServerBundle\Websocket\Events as WebsocketEvents;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,6 +44,8 @@ class SwooleStartCommand extends ContainerAwareCommand
         });
         
         $dispatcher = new EventDispatcher();
+        
+        $server->on('handshake', function ($request, $response) {});
         
         $server->on('open', function ($server, $request) {
             $event = new WebSocketEvent($server, $request->fd);
